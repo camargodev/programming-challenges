@@ -8,7 +8,7 @@ using namespace std;
 using ull = int;
 map<ull, ull> minValues;
 ull L, P1, P2;
-vector<ull> nexts;
+// vector<ull> nexts;
 
 // bool hasHole(ull pos) {
 //     return find(positions.begin(), positions.end(), pos) != positions.end();
@@ -30,7 +30,9 @@ ull minVal(ull pos, vector<bool> covered) {
     }
 
     if (covered[pos]) { 
-        int next = nexts[pos];
+        int next = pos+1;
+        while (covered[next] && next<L) next+=1;
+        // int next = nexts[pos];
         // cout << "Skipping " << pos << " > going to " << next << endl;
         return minVal(next, covered);
     }
@@ -78,14 +80,14 @@ ull minVal(ull pos, vector<bool> covered) {
 
 // }
 
-void printTables(vector<bool> covered, vector<ull> nexts) {
-    cout << "covered = [ ";
-    for (int i = 0; i < covered.size(); i++) cout << covered[i] << " ";
-    cout << "]" << endl;
-    cout << "nexts = [ ";
-    for (int i = 0; i < nexts.size(); i++) cout << nexts[i] << " ";
-    cout << "]" << endl;
-}
+// void printTables(vector<bool> covered, vector<ull> nexts) {
+//     cout << "covered = [ ";
+//     for (int i = 0; i < covered.size(); i++) cout << covered[i] << " ";
+//     cout << "]" << endl;
+//     cout << "nexts = [ ";
+//     for (int i = 0; i < nexts.size(); i++) cout << nexts[i] << " ";
+//     cout << "]" << endl;
+// }
 
 int main() {
     ull holes;
@@ -94,7 +96,7 @@ int main() {
         cin >> L >> P1 >> P2;
         // cout << holes << " " << L << " " << P1 << " " << P2 << endl;
         vector<bool> covered(L, true);
-        for(int i=0;i<L;i++) nexts.push_back(0);
+        // for(int i=0;i<L;i++) nexts.push_back(0);
         // bool isFirst = true; ull first;
         for (ull i = 0; i < holes; i++) {
             ull pos; cin >> pos;
@@ -103,18 +105,18 @@ int main() {
             covered[pos-1] = false;
             // if (isFirst) { first = pos-1; isFirst = false; }
         }
-        int currentNext = L-1;
-        // cout << "1" << endl;
-        for (ull j = L; j > 0; j--) {
-            // cout << "j: " << j-1 << endl;
-            if (covered[j-1] == false) currentNext = j-1;
-            // cout << "3" << endl;
-            nexts[j-1] = currentNext;
-        }
+        // int currentNext = L-1;
+        // // cout << "1" << endl;
+        // for (ull j = L; j > 0; j--) {
+        //     // cout << "j: " << j-1 << endl;
+        //     if (covered[j-1] == false) currentNext = j-1;
+        //     // cout << "3" << endl;
+        //     nexts[j-1] = currentNext;
+        // }
         // printTables(covered,nexts);
         ull res = minVal(0, covered);
         cout << res << endl;
         minValues.clear();
-        nexts.clear();
+        // nexts.clear();
     }
 }
