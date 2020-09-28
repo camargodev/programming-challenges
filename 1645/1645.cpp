@@ -6,11 +6,12 @@
 using namespace std; 
 using ll = long long;
 using pll = pair<ll, ll>;
+using chkey = pair<ll, pll>;
 
 ll N, K;
 // ll numOfSequences;
 vector<ll> sequence;
-map<pll, ll> cache;
+map<chkey, ll> cache;
 vector<vector<ll>> seqsbynum;
 
 #define loop(n) for (ll i=0; i<n; ++i)
@@ -18,41 +19,35 @@ vector<vector<ll>> seqsbynum;
 bool end(ll N, ll K) {
     return N == 0 && K == 0;
 }
+
+chkey makekey(ll last, ll curr, ll len) {
+    return make_pair(last, make_pair(curr, len));
+}
  
 
-ll count(vector<ll> vals, ll len, ll index) {
-    if (index == N) return 0; 
-    if (len == 0 && index > (N-K)) return 0;
+ll count(ll lastindex, ll currindex, ll len) {
+    chkey key = makekey(lastindex, currindex, len);
 
-    ll next = index+1;
-    ll curr = sequence[index];
+    if (cache.find(key) != cache.end()) return cache[key];
+    if (currindex >= N) return 0;
 
-    vector<ll> valswithcurr = vals;
-    valswithcurr.push_back(curr);
+    ll nextindex = currindex + 1;
+    ll seqsWithoutCurr = count(lastindex, nextindex, len); // qdo nao adiciona currval
 
-    ll seqsWithoutCurr = count(vals, len, next);
-
-    if (len == 0) { // pode add qualquer valor
-        ll seqsWithCurr = count(valswithcurr, len+1, next);
-        return seqsWithoutCurr + seqsWithCurr;
-    }
-
-    if (vals[len-1] >= curr) { // se curr > ultimo, entao nao pode add curr
-        return seqsWithoutCurr;
-    }
-
-    if ((len+1) == K) { // se com curr, chega a K, entao +1 no num de seqs
-        cache[cacheIndex] = seqsWithoutCurr + 1;
-        return cache[cacheIndex];
-    }
-
-    ll seqsWithCurr = count(valswithcurr, len+1, next);
-    return seqsWithoutCurr + seqsWithCurr;
+    if (len == 0)// pode add qualquer valor, entao considera com e sem currval
+        cache[key] = seqsWithoutCurr + count(currindex, nextindex, len+1);
+    else if (sequence[lastindex] >= sequence[currindex]) // nao pode adicionar curr
+        cache[key] = seqsWithoutCurr; 
+    else if ((len+1) == K)// adicionando curr, chega a K, entao +1 no num de seqs
+        cache[key] = seqsWithoutCurr + 1;
+    else // cai aqui qdo len>0, pode add curr e nao chegou em K
+        cache[key] = seqsWithoutCurr + count(currindex, nextindex, len+1);
+    
+    return cache[key];
 }
 
 ll countSequences() {
-    vector<ll> init;
-    return count(init, 0, 0);
+    return count(-1, 0, 0);
 }
 
 int main() {
