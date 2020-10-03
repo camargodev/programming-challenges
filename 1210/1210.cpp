@@ -5,70 +5,88 @@
 #include <map>
 
 using namespace std;
-#define loop(n) for (num i=0; i<n; ++i)
-#define loopi(i, n) for (num i=0; i<n; ++i)
-using num = int;
-using nums = vector<num>;
 
+using num = int;
+using nums = vector<int>;
+// using key = pair<num, num>;
+#define loop(i, n) for (num i=0; i<n; ++i)
 struct result {
   num cost;
   nums changes;
   result(num cost, nums changes): 
     cost(cost), changes(changes) {}
 };
+// using cache = map<key, result>; 
 
-num MAX_YEAR, MAX_AGE, NEW_COST;
-nums maints, sales;
+const num MAXN = 2002;
+num maints[MAXN], prices[MAXN];
 
-nums changesUpdated(nums changes, num val) {
-    changes.push_back(val);
+num max_year, curr_age, max_age, new_price;
+const num start_age = 1;
+
+// map<key, result> dp;
+
+nums updated_changes(nums changes, num year) {
+    changes.push_back(year+1);
     return changes;
 }
 
-num minCost(num year, num age) {
-    if (year == MAX_YEAR) return 0;
+// result build_res(nums ch) {
+//     result res;
+//     res.cost = 0;
+//     res.changes = ch;
+//     return res;
+// }
 
-    if (age == MAX_AGE) {
-        return minCost(year+1, 1) + (NEW_COST - sales[age-1]) + maints[0];
+result min_cost(num year, num age, nums changes) {
+    // const key idx = make_pair(year, age);
+
+    // if (dp.find(idx) != dp.end()) 
+    //     return dp[idx];
+    
+    if (year == max_year) {
+        return result(0, changes);
+        // result res = build_res(changes);
+        // dp[idx] = res;
+        // return dp[idx];
+        // return res;
+    }
+    num next_year = year+1;
+
+    result res = min_cost(next_year, start_age, updated_changes(changes, year));
+    res.cost += (new_price - prices[age-1] + maints[0]);
+
+    if (age < max_age) {
+        result temp = min_cost(next_year, age+1, changes);
+        temp.cost += maints[age];
+        if (temp.cost < res.cost) res = temp;
     }
 
-    num change = minCost(year+1, 1) + (NEW_COST - sales[age-1]) + maints[0];
-    num maint  = minCost(year+1, age+1) + maints[age];
-
-    return min(change, maint);
-
-    // num res = minCost(year+1, 1) + (NEW_COST - soldCosts[age-1]) + maintCosts[0];
-
-    // if (age < MAX_AGE) {
-    //     num temp = minCost(year+1, age+1) + maintCosts[age];
-    //     if (temp < res) res = temp;
-    // }
-    // return res;
+    // dp[idx] = res;
+    return res;
 }
 
-num minimumCost(num age) {
-    nums empty;
-    return minCost(0, age);
+void print_res(result res) {
+    cout << res.cost << endl;
+    if (res.changes.size() == 0) {
+        cout << 0 << endl;
+    } else {
+        loop(i, res.changes.size())
+            cout << res.changes[i] << " ";
+        cout << endl;
+    }
 }
 
 int main() {
-    num age, cost;
-    while(cin >> MAX_YEAR) {
-        cin >> age >> MAX_AGE >> NEW_COST;
-        loop(MAX_AGE) {  
-            cin >> cost;
-            maints.push_back(cost);
-        }
-        loop(MAX_AGE) {  
-            cin >> cost;
-            sales.push_back(cost);
-        }
-        // p();
-        num res = minimumCost(age);
-        cout << res << endl;
-        // loopi(i, res.changes.size()) { cout << res.changes[i] << " "; }
-        // cout << endl;
+    num start_year = 0;
+    while (cin >> max_year) {
+        nums changes;
+        cin >> curr_age >> max_age >> new_price;
+        loop(i, max_age) cin >> maints[i];
+        loop(i, max_age) cin >> prices[i];
+        result res = min_cost(start_year, curr_age, changes);
+        print_res(res);
+        // dp.clear();
     }
-
     return 0;
 }
