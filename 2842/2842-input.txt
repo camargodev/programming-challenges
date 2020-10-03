@@ -9,6 +9,14 @@ aaa
 ab
 a
 a
-
+a
 abcdefg
 abbcdhh
+abcde
+edcba
+batata
+tataba
+arara
+rarar
+aabc
+abb
