@@ -18,21 +18,66 @@ num dp[MAXN][MAXN];
 num max_year, curr_age, max_age, new_price;
 const num start_age = 1;
 
-num min_cost(num year, num age) {
-    if (dp[year][age] >= 0) return dp[year][age];
+num next(num curr) { return curr+1; }
 
-    if (year == max_year) return dp[year][age] = 0;
-    num res = min_cost(year+1, start_age) + (new_price - prices[age-1] + maints[0]);
+num change_price(num age) {
+    return new_price - prices[age-1] + maints[0];
+}
+
+num maint_price(num age) {
+    return maints[age];
+}
+
+num min_cost(num year, num age) {
+    if (dp[year][age] != -1) 
+        return dp[year][age];
+
+    if (year == max_year) 
+        return dp[year][age] = 0;
+
+    num res = min_cost(next(year), start_age) + change_price(age);
 
     if (age < max_age) {
-        num temp = min_cost(year+1, age+1) +  maints[age];
+        num temp = min_cost(next(year), next(age)) + maint_price(age);
         res = min(res, temp);
     }
+
     return dp[year][age] = res;
 }
 
-void print_res(num res) {
+nums track_changes() {
+    nums changes;
+    num year = 0, age = curr_age;
+    
+    loop(year, max_year) {
+      if (age == max_age) {
+        changes.push_back(next(year));
+        age = start_age;
+      } else {
+        int change = dp[next(year)][start_age] + change_price(age);
+        int maint = dp[next(year)][next(age)] + maint_price(age);
+        if (change <= maint) {
+          changes.push_back(next(year));
+          age = start_age;
+        } else {
+          age = next(age);
+        }
+      }
+    }
+    return changes;
+}
+
+void print_res(num res, nums changes) {
     cout << res << endl;
+    if (changes.size() == 0) {
+        cout << 0 << endl;
+        return;
+    } 
+    loop(i, changes.size()) {
+        if (i > 0) cout << ' ';
+        cout << changes[i];
+    }
+    cout << endl;
 }
 
 int main() {
@@ -43,7 +88,8 @@ int main() {
         loop(i, max_age) cin >> maints[i];
         loop(i, max_age) cin >> prices[i];
         num res = min_cost(start_year, curr_age);
-        print_res(res);
+        nums changes = track_changes();
+        print_res(res, changes);
     }
     return 0;
 }
