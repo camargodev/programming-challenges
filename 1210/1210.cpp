@@ -9,7 +9,7 @@ using namespace std;
 using num = int;
 using nums = vector<int>;
 using key = pair<num, num>;
-#define loop(i, n) for (num i=0; i<n; ++i)
+#define loop(i, n) for (num i = 0; i < n; i++)
 
 const num MAXN = 2002;
 num maints[MAXN], prices[MAXN];
@@ -47,22 +47,21 @@ num min_cost(num year, num age) {
 
 nums track_changes() {
     nums changes;
-    num year = 0, age = curr_age;
+    num age = curr_age;
     
     loop(year, max_year) {
-      if (age == max_age) {
-        changes.push_back(next(year));
-        age = start_age;
-      } else {
+        if (age == max_age) {
+            changes.push_back(next(year));
+            age = start_age;
+            continue;
+        } 
         int change = dp[next(year)][start_age] + change_price(age);
         int maint = dp[next(year)][next(age)] + maint_price(age);
+        age = next(age);
         if (change <= maint) {
-          changes.push_back(next(year));
-          age = start_age;
-        } else {
-          age = next(age);
-        }
-      }
+            changes.push_back(next(year));
+            age = start_age;
+        } 
     }
     return changes;
 }
@@ -74,7 +73,7 @@ void print_res(num res, nums changes) {
         return;
     } 
     loop(i, changes.size()) {
-        if (i > 0) cout << ' ';
+        if (i > 0) cout << " ";
         cout << changes[i];
     }
     cout << endl;
