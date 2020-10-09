@@ -7,41 +7,72 @@
 #include <math.h>
 #include <string.h>
 
-using namespace std; 
+using namespace std;
 
 using num = int;
 #define loop(n) for (num i = 0; i < n; i++)
 #define loopi(i, n) for (num i = 0; i < n; i++)
 
+const num MAX_SONGS = 101, MAX_TAPES = 4, MAX_LEN = 51;
+
 num num_songs, num_tapes;
 vector<num> songs;
+num dp[MAX_SONGS][MAX_LEN][MAX_LEN][MAX_LEN];
 
 num max_usage(num curr_song, num c1, num c2, num c3) {
+
     if (curr_song == num_songs) return 0;
+
+    num val = dp[curr_song][c1][c2][c3];
+    if (val != -1) return val;
+
+    // if (dp[curr_song][c1][songs[curr_song]] != -1)
+    //     return dp[curr_song][c1][songs[curr_song]];
+    
+    // if (dp[curr_song][c2][songs[curr_song]] != -1)
+    //     return dp[curr_song][c2][songs[curr_song]];
+
+    // if (dp[curr_song][c3][songs[curr_song]] != -1)
+    //     return dp[curr_song][c3][songs[curr_song]];
     
     num song_len = songs[curr_song];
     num next = curr_song + 1;
 
     num result = max_usage(next, c1, c2, c3);
 
+    num used_tape = -1;
+
     if (c1 >= song_len) {
         num tape_1 = max_usage(next, c1-song_len, c2, c3);
+        // if ((song_len + tape_1) >= result) {
+        //     result = (song_len + tape_1);
+        //     used_tape = 0;
+        // }
         result = max(result, song_len + tape_1);
     }
     if (c2 >= song_len) {
         num tape_2 = max_usage(next, c1, c2-song_len, c3);
+        // if ((song_len + tape_2) >= result) {
+        //     result = (song_len + tape_2);
+        //     used_tape = 1;
+        // }
         result = max(result, song_len + tape_2);
     }
     if (c3 >= song_len) {
         num tape_3 = max_usage(next, c1, c2, c3-song_len);
+        // if ((song_len + tape_3) >= result) {
+        //     result = (song_len + tape_3);
+        //     used_tape = 2;
+        // }
         result = max(result, song_len + tape_3);
     }
 
-    return result;
+    return dp[curr_song][c1][c2][c3] = result;
 }
 
 int main() {
     while(cin >> num_songs >> num_tapes) {
+        memset(dp, -1, sizeof dp);
         songs.resize(num_songs);
         vector<num> capacities(num_tapes, -1);
         loopi(i, num_songs) {
