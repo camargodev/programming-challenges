@@ -32,9 +32,7 @@ int inv(int val, int mod) {
     return res; 
 } 
 
-num get_num_of_oranges(num div[], num rest[]) { 
-
-    num prod = div[0]*div[1]*div[2];
+num get_num_of_oranges(num div[], num rest[], num prod) { 
   
     num result = 0; 
     for (num i = 0; i < 3; i++) { 
@@ -45,6 +43,13 @@ num get_num_of_oranges(num div[], num rest[]) {
     return result % prod; 
 } 
 
+bool all_rests_zero(num rest[]) {
+    if (rest[0] > 0) return false;
+    if (rest[1] > 0) return false;
+    if (rest[2] > 0) return false;
+    return true;
+}
+
 int main() {
     num div[3];
     num rest[3];
@@ -54,7 +59,9 @@ int main() {
         cin >> rest[1] >> div[1];
         cin >> rest[2] >> div[2];
         case_index += 1;
-        num res = get_num_of_oranges(div, rest);
+        num prod = div[0]*div[1]*div[2];
+        bool are_all_rests_zero = all_rests_zero(rest);
+        num res = are_all_rests_zero ? prod : get_num_of_oranges(div, rest, prod);
         cout << "Caso #" << case_index << ": " << res << " laranja(s)" << endl;
     }
 }
