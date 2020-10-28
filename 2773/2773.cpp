@@ -8,22 +8,20 @@
 
 using namespace std; 
 
-using num = long long;
-
 struct Point {
-    num x;
-    num y;
+    int x;
+    int y;
 };
 
 Point house, school;
 Point field_left_down, field_right_up;
 Point field_left_up, field_right_down;
-num speed;
+int speed;
 
-double dist(Point a, Point b) {
-    double x = a.x - b.x;
-	double y = a.y - b.y;
-	double distance;
+float dist(Point a, Point b) {
+    int x = a.x - b.x;
+	int y = a.y - b.y;
+	float distance;
 
 	distance = pow(x, 2) + pow(y, 2);
 	distance = sqrt(distance);                  
@@ -31,11 +29,8 @@ double dist(Point a, Point b) {
 	return distance;
 }
 
-void print_point(Point p) {
-    cout << "{ " << p.x << ", " << p.y << "}" << endl;
-}
-
 int main() {
+    cout << fixed << setprecision(1);
     while (cin >> house.x >> house.y) {
         cin >> school.x >> school.y;
         
@@ -59,12 +54,8 @@ int main() {
             + dist(field_right_up, school);
 
         float min_dist = min(distance_down, distance_up);
-        float time = ((float) min_dist)/((float) speed);
-        cout << fixed << setprecision(1);
+        float time = min_dist/((float) speed);
         cout << time << endl;
-
-
-
     }
     return 0;
 }
