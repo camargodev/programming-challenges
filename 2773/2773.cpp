@@ -14,48 +14,38 @@ struct Point {
 };
 
 Point house, school;
-Point field_left_down, field_right_up;
-Point field_left_up, field_right_down;
+Point left_down, right_up, left_up, right_down;
 int speed;
 
-float dist(Point a, Point b) {
+double dist(Point a, Point b) {
     int x = a.x - b.x;
 	int y = a.y - b.y;
-	float distance;
-
-	distance = pow(x, 2) + pow(y, 2);
-	distance = sqrt(distance);                  
-
-	return distance;
+	return sqrt(x*x + y*y);     
 }
 
 int main() {
-    cout << fixed << setprecision(1);
-    while (cin >> house.x >> house.y) {
-        cin >> school.x >> school.y;
-        
-        cin >> speed;
+    while (cin >> house.x  >> house.y
+            >> school.x    >> school.y >> speed
+            >> left_down.x >> left_down.y
+            >> right_up.x  >> right_up.y) {
 
-        cin >> field_left_down.x >> field_left_down.y;
-        cin >> field_right_up.x >> field_right_up.y;
+        left_up.x = left_down.x;
+        left_up.y = right_up.y;
 
-        field_left_up.x = field_left_down.x;
-        field_left_up.y = field_right_up.y;
+        right_down.x = right_up.x;
+        right_down.y = left_down.y;
 
-        field_right_down.x = field_right_up.x;
-        field_right_down.y = field_left_down.y;
+        double distance_down = dist(house, left_down) 
+            + dist(left_down, right_down) 
+            + dist(right_down, school);
 
-        float distance_down = dist(house, field_left_down) 
-            + dist(field_left_down, field_right_down) 
-            + dist(field_right_down, school);
+        double distance_up = dist(house, left_up) 
+            + dist(left_up, right_up) 
+            + dist(right_up, school);
 
-        float distance_up = dist(house, field_left_up) 
-            + dist(field_left_up, field_right_up) 
-            + dist(field_right_up, school);
-
-        float min_dist = min(distance_down, distance_up);
-        float time = min_dist/((float) speed);
-        cout << time << endl;
+        double min_dist = min(distance_down, distance_up);
+        double time = min_dist/((double) speed);
+        cout << fixed << setprecision(1) << time << endl;
     }
     return 0;
 }
