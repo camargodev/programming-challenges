@@ -18,8 +18,8 @@ Point left_down, right_up, left_up, right_down;
 int speed;
 
 double dist(Point a, Point b) {
-    int x = a.x - b.x;
-	int y = a.y - b.y;
+    double x = a.x - b.x;
+	double y = a.y - b.y;
 	return sqrt(x*x + y*y);     
 }
 
