@@ -70,15 +70,15 @@ int get_bottom_most_point_index(Point points[], int n) {
     return min;
 }
 
-stack<Point> build_start_stack(Point points[]) {
-    stack<Point> point_stack; 
-    point_stack.push(points[0]); 
-    point_stack.push(points[1]); 
-    point_stack.push(points[2]); 
-    return point_stack;
+vector<Point> build_start_hull(Point points[]) {
+    vector<Point> start_hull; 
+    start_hull.push_back(points[0]); 
+    start_hull.push_back(points[1]); 
+    start_hull.push_back(points[2]); 
+    return start_hull;
 }
 
-stack<Point> convex_hull(Point points[], int n) { 
+vector<Point> convex_hull(Point points[], int n) { 
     
     int bottom_most_point = get_bottom_most_point_index(points, n);
     swap_points(points[0], points[bottom_most_point]); 
@@ -92,27 +92,27 @@ stack<Point> convex_hull(Point points[], int n) {
         mod_len++;
     } 
 
-    stack<Point> point_stack;
+    vector<Point> hull;
     
-    if (mod_len < MIN_HULL_SIZE) return point_stack; 
+    if (mod_len < MIN_HULL_SIZE) return hull; // empty
 
-    point_stack = build_start_stack(points);
+    hull = build_start_hull(points);
 
     for (int i = MIN_HULL_SIZE; i < mod_len; i++) { 
-        while (orientation(nextToTop(point_stack), point_stack.top(), points[i]) != COUNTER_CLOCKWISE) 
-            point_stack.pop(); 
-        point_stack.push(points[i]); 
+        while (orientation(hull[hull.size()-2], hull[hull.size()-1], points[i]) != COUNTER_CLOCKWISE) 
+            hull.pop_back(); 
+        hull.push_back(points[i]); 
     } 
-    return point_stack;
+    return hull;
 } 
 
 int count_onion_layers(Point points[], int n) {
-    stack<Point> point_stack = convex_hull(points, n);
+    vector<Point> hull = convex_hull(points, n);
 
-    while (!point_stack.empty())  { 
-        Point point = point_stack.top(); 
+    while (!hull.empty())  { 
+        Point point = hull[hull.size()-1]; 
         cout << "(" << point.x << ", " << point.y <<")" << endl; 
-        point_stack.pop(); 
+        hull.pop_back(); 
     } 
     return 0;
 }
