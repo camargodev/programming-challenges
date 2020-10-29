@@ -10,6 +10,10 @@ using namespace std;
 
 struct Point { 
 	int x, y; 
+
+	bool operator ==(Point other) {
+		return x == other.x && y == other.y;
+	}
 }; 
 
 Point start_point; 
@@ -22,6 +26,28 @@ void swap_points(Point &p1, Point &p2) {
 	p1 = p2; 
 	p2 = temp; 
 } 
+
+void print_points(vector<Point> points) {
+    cout << "POINTS: " << endl;
+    if (points.size() == 0 ){
+        cout << "No points " << endl;
+        return;
+    }
+    for (int i = 0; i < points.size(); i++)
+        cout << "(" << points[i].x << ", " << points[i].y <<")" << endl; 
+    cout << endl;
+}
+
+void print_hull(vector<Point> hull) {
+    cout << "HULL: " << endl;
+    if (hull.size() == 0 ){
+        cout << "Empty Hull " << endl;
+        return;
+    }
+    for (int i = hull.size() - 1; i >= 0; i--)
+        cout << "(" << hull[i].x << ", " << hull[i].y <<")" << endl;
+    cout << endl;
+}
 
 int square_distance(Point p1, Point p2)  { 
     int dist_x = p1.x - p2.x;
@@ -66,65 +92,62 @@ vector<Point> build_start_hull(vector<Point> points) {
 }
 
 vector<Point> convex_hull(vector<Point> points, int n) { 
+
+    // print_points(points);
     
     int bottom_most_point = get_bottom_most_point_index(points, n);
     swap_points(points[0], points[bottom_most_point]); 
     start_point = points[0]; 
     qsort(&points[1], n-1, sizeof(Point), compare); 
 
-    int mod_len = 1;
-    for (int i = 1; i < n; i++) { 
-        while (i < n-1 && orientation(start_point, points[i], points[i+1]) == COLINEAR) 
-            i++; 
-        points[mod_len] = points[i]; 
-        mod_len++;
+    // int mod_len = 1;
+    bool is_line = true;
+    for (int i = 1; i < n-1; i++) { 
+        // cout << "I = " << i << endl;
+        // while (i < n-1 && (orientation(start_point, points[i], points[i+1]) == COLINEAR)) {
+        //     i++; 
+        //     cout << "Points " << "(" << start_point.x << ", " << start_point.y << ")" << endl;
+        //     cout << "   (" << points[i].x << ", " << points[i].y << ")" << endl;
+        //     cout << "   (" << points[i+1].x << ", " << points[i+1].y << ")" << endl;
+        //     cout << " are colinear. Skipping i to " << i << endl;
+        // }
+        if (orientation(start_point, points[i], points[i+1]) != COLINEAR) {
+            is_line = false;
+            // cout << "Points " << "(" << start_point.x << ", " << start_point.y << ")" << endl;
+            // cout << "   (" << points[i].x << ", " << points[i].y << ")" << endl;
+            // cout << "   (" << points[i+1].x << ", " << points[i+1].y << ")" << endl;
+            // cout << " are NOT colinear. Turns count =  " << turns << endl;
+        } else {
+            // turns += 1;
+            // cout << "Points " << "(" << start_point.x << ", " << start_point.y << ")" << endl;
+            // cout << "   (" << points[i].x << ", " << points[i].y << ")" << endl;
+            // cout << "   (" << points[i+1].x << ", " << points[i+1].y << ")" << endl;
+            // cout << " ARE colinear. Turns count =  " << turns << endl;
+
+        }
+        // points[mod_len] = points[i]; 
+        // mod_len++;
     } 
 
     vector<Point> hull;
     
-    if (mod_len < MIN_HULL_SIZE) return hull; // empty
+    if (n < MIN_HULL_SIZE || is_line) return hull; // empty
 
     hull = build_start_hull(points);
 
-    for (int i = MIN_HULL_SIZE; i < mod_len; i++) { 
-        while (orientation(hull[hull.size()-2], hull[hull.size()-1], points[i]) != COUNTER_CLOCKWISE
-            && orientation(hull[hull.size()-2], hull[hull.size()-1], points[i]) != COLINEAR) 
+    for (int i = MIN_HULL_SIZE; i < n; i++) { 
+        while (orientation(hull[hull.size()-2], hull[hull.size()-1], points[i]) == CLOCKWISE)
             hull.pop_back(); 
         hull.push_back(points[i]); 
     } 
     return hull;
 } 
 
-void print_points(vector<Point> points) {
-    if (points.size() == 0 ){
-        cout << "No points " << endl;
-        return;
-    }
-    for (int i = 0; i < points.size(); i++)
-        cout << "(" << points[i].x << ", " << points[i].y <<")" << endl; 
-}
-
-void print_hull(vector<Point> hull) {
-    if (hull.size() == 0 ){
-        cout << "Empty Hull " << endl;
-        return;
-    }
-    for (int i = hull.size() - 1; i >= 0; i--)
-        cout << "(" << hull[i].x << ", " << hull[i].y <<")" << endl; 
-}
-
-struct find_point : std::unary_function<Point, bool> {
-    Point other_point;
-    find_point(Point other_point):other_point(other_point) { }
-    bool operator()(Point const& point) const {
-        return point.x == other_point.x && point.y == other_point.y;
-    }
-};
 
 vector<Point> remove_hull_from_points(vector<Point> points, vector<Point> hull) {
     points.erase(
         remove_if(begin(points), end(points), [&](auto point) {
-            return find_if(begin(hull), end(hull), find_point(point)) != end(hull); 
+            return find(begin(hull), end(hull), point) != end(hull); 
         }), end(points));
     return points;
 }
@@ -134,10 +157,9 @@ int count_onion_layers(vector<Point> points) {
     bool can_make_a_hull = true;
     while (can_make_a_hull) {
         vector<Point> hull = convex_hull(points, points.size());
-        num_of_hulls += 1;
         // print_hull(hull);
-        // cout << endl;
         if (hull.size() > 0) {
+            num_of_hulls += 1;
             points = remove_hull_from_points(points, hull);
             if (points.size() == 0) 
                 can_make_a_hull = false;
