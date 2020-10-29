@@ -15,8 +15,8 @@ struct Point {
 Point start_point; 
 
 int COLINEAR = 0, CLOCKWISE = 1, COUNTER_CLOCKWISE = 2;
+int MIN_HULL_SIZE = 3;
 
-// A utility function to find next to top in a stack 
 Point nextToTop(stack<Point> &S) { 
 	Point p = S.top(); 
 	S.pop(); 
@@ -44,19 +44,21 @@ int orientation(Point p, Point q, Point r)  {
     return COUNTER_CLOCKWISE;
 } 
 
-// A function used by library function qsort() to sort an array of 
-// points with respect to the first point 
 int compare(const void *vp1, const void *vp2) { 
     Point *p1 = (Point *)vp1; 
     Point *p2 = (Point *)vp2; 
 
-    // Find orientation 
     int o = orientation(start_point, *p1, *p2); 
-    if (o == 0) 
+    if (o == COLINEAR) 
         return (square_distance(start_point, *p2) >= square_distance(start_point, *p1))? -1 : 1; 
 
-    return (o == 2)? -1: 1; 
+    return (o == COUNTER_CLOCKWISE) ? -1: 1; 
 } 
+
+void sort_points(Point* points, int n) {
+    start_point = points[0]; 
+    qsort(&points[1], n-1, sizeof(Point), compare); 
+}
 
 int get_bottom_most_point_index(Point points[], int n) {
     int ymin = points[0].y, min = 0; 
@@ -68,70 +70,53 @@ int get_bottom_most_point_index(Point points[], int n) {
     return min;
 }
 
-void convex_hull(Point points[], int n) { 
+stack<Point> build_start_stack(Point points[]) {
+    stack<Point> point_stack; 
+    point_stack.push(points[0]); 
+    point_stack.push(points[1]); 
+    point_stack.push(points[2]); 
+    return point_stack;
+}
+
+stack<Point> convex_hull(Point points[], int n) { 
     
-    int bottom_most_point_index = get_bottom_most_point_index(points, n);
-    swap_points(points[0], points[bottom_most_point_index]); 
+    int bottom_most_point = get_bottom_most_point_index(points, n);
+    swap_points(points[0], points[bottom_most_point]); 
+    sort_points(points, n);
 
-    // Sort n-1 points with respect to the first point. 
-    // A point p1 comes before p2 in sorted output if p2 
-    // has larger polar angle (in counterclockwise 
-    // direction) than p1 
-    start_point = points[0]; 
-    qsort(&points[1], n-1, sizeof(Point), compare); 
-
-    // If two or more points make same angle with start_point, 
-    // Remove all but the one that is farthest from start_point 
-    // Remember that, in above sorting, our criteria was 
-    // to keep the farthest point at the end when more than 
-    // one points have same angle. 
-    int m = 1; // Initialize size of modified array 
-    for (int i=1; i<n; i++) { 
-        // Keep removing i while angle of i and i+1 is same 
-        // with respect to start_point 
-        while (i < n-1 && orientation(start_point, points[i], 
-                                        points[i+1]) == 0) 
+    int mod_len = 1;
+    for (int i = 1; i < n; i++) { 
+        while (i < n-1 && orientation(start_point, points[i], points[i+1]) == COLINEAR) 
             i++; 
-
-
-        points[m] = points[i]; 
-        m++; // Update size of modified array 
+        points[mod_len] = points[i]; 
+        mod_len++;
     } 
 
-    // If modified array of points has less than 3 points, 
-    // convex hull is not possible 
-    if (m < 3) return; 
+    stack<Point> point_stack;
+    
+    if (mod_len < MIN_HULL_SIZE) return point_stack; 
 
-    // Create an empty stack and push first three points 
-    // to it. 
-    stack<Point> S; 
-    S.push(points[0]); 
-    S.push(points[1]); 
-    S.push(points[2]); 
+    point_stack = build_start_stack(points);
 
-    // Process remaining n-3 points 
-    for (int i = 3; i < m; i++) { 
-        // Keep removing top while the angle formed by 
-        // points next-to-top, top, and points[i] makes 
-        // a non-left turn 
-        while (orientation(nextToTop(S), S.top(), points[i]) != 2) 
-            S.pop(); 
-        S.push(points[i]); 
+    for (int i = MIN_HULL_SIZE; i < mod_len; i++) { 
+        while (orientation(nextToTop(point_stack), point_stack.top(), points[i]) != COUNTER_CLOCKWISE) 
+            point_stack.pop(); 
+        point_stack.push(points[i]); 
     } 
-
-    // Now stack has the output points, print contents of stack 
-    while (!S.empty())  { 
-        Point p = S.top(); 
-        cout << "(" << p.x << ", " << p.y <<")" << endl; 
-        S.pop(); 
-    } 
+    return point_stack;
 } 
 
 int count_onion_layers(Point points[], int n) {
+    stack<Point> point_stack = convex_hull(points, n);
+
+    while (!point_stack.empty())  { 
+        Point point = point_stack.top(); 
+        cout << "(" << point.x << ", " << point.y <<")" << endl; 
+        point_stack.pop(); 
+    } 
     return 0;
 }
 
-// Driver program to test above functions 
 int main() { 
     int n;
     while (true) {
@@ -142,7 +127,9 @@ int main() {
         for (int i = 0; i < n; i++) {
             cin >> points[i].x >> points[i].y;
         }
-        convex_hull(points, n); 
+        int onion_layers = count_onion_layers(points, n); 
+        if (onion_layers % 2 == 0) cout << "NO" << endl;
+        else cout << "YES" << endl;
     }
     return 0; 
 } 
