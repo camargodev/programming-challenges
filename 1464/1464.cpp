@@ -99,15 +99,48 @@ vector<Point> convex_hull(vector<Point> points, int n) {
     return hull;
 } 
 
-int count_onion_layers(vector<Point> points) {
-    vector<Point> hull = convex_hull(points, points.size());
+void print_points(vector<Point> points) {
+    for (int i = 0; i < points.size(); i++)
+        cout << "(" << points[i].x << ", " << points[i].y <<")" << endl; 
+}
 
-    while (!hull.empty())  { 
-        Point point = hull[hull.size()-1]; 
-        cout << "(" << point.x << ", " << point.y <<")" << endl; 
-        hull.pop_back(); 
-    } 
-    return 0;
+void print_hull(vector<Point> hull) {
+    for (int i = hull.size() - 1; i >= 0; i--)
+        cout << "(" << hull[i].x << ", " << hull[i].y <<")" << endl; 
+}
+
+struct find_point : std::unary_function<Point, bool> {
+    Point other_point;
+    find_point(Point other_point):other_point(other_point) { }
+    bool operator()(Point const& point) const {
+        return point.x == other_point.x && point.y == other_point.y;
+    }
+};
+
+vector<Point> remove_hull_from_points(vector<Point> points, vector<Point> hull) {
+    points.erase(
+        remove_if(begin(points), end(points), [&](auto point) {
+            return find_if(begin(hull), end(hull), find_point(point)) != end(hull); 
+        }), end(points));
+    return points;
+}
+
+int count_onion_layers(vector<Point> points) {
+    int num_of_hulls = 0;
+    vector<Point> hull = convex_hull(points, points.size());
+    // while (!hull.empty()) {
+    cout << "POINTS BEFORE " << endl;
+    print_points(points);
+    
+    num_of_hulls += 1;
+    cout << "HULL " << endl;
+    print_hull(hull);
+    points = remove_hull_from_points(points, hull);
+    cout << "POINTS AFTER " << endl;
+    print_points(points);
+    //     hull = convex_hull(points, points.size());
+    // }
+    return num_of_hulls;
 }
 
 int main() { 
