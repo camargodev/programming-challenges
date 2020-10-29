@@ -132,22 +132,12 @@ int count_onion_layers(vector<Point> points) {
     int num_of_hulls = 0;
     bool can_make_a_hull = true;
     while (can_make_a_hull) {
-        cout << "POINTS BEFORE " << endl;
-        print_points(points);
-
         vector<Point> hull = convex_hull(points, points.size());
         if (hull.size() > 0) {
             num_of_hulls += 1;
-
-            cout << "HULL " << endl;
-            print_hull(hull);
-
             points = remove_hull_from_points(points, hull);
-
-            cout << "POINTS AFTER " << endl;
-            print_points(points);
-
-            if (points.size() == 0) can_make_a_hull = false;
+            if (points.size() == 0) 
+                can_make_a_hull = false;
         } else {
             can_make_a_hull = false;
         }
@@ -168,8 +158,8 @@ int main() {
             points.push_back(point);
         }
         int onion_layers = count_onion_layers(points); 
-        if (onion_layers % 2 == 0) cout << "NO" << endl;
-        else cout << "YES" << endl;
+        if (onion_layers % 2 == 0) cout << "Do not take this onion to the lab!" << endl;
+        else cout << "Take this onion to the lab!" << endl;
     }
     return 0; 
 } 
