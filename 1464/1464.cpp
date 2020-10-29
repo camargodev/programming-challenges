@@ -102,31 +102,9 @@ vector<Point> convex_hull(vector<Point> points, int n) {
 
     // int mod_len = 1;
     bool is_line = true;
-    for (int i = 1; i < n-1; i++) { 
-        // cout << "I = " << i << endl;
-        // while (i < n-1 && (orientation(start_point, points[i], points[i+1]) == COLINEAR)) {
-        //     i++; 
-        //     cout << "Points " << "(" << start_point.x << ", " << start_point.y << ")" << endl;
-        //     cout << "   (" << points[i].x << ", " << points[i].y << ")" << endl;
-        //     cout << "   (" << points[i+1].x << ", " << points[i+1].y << ")" << endl;
-        //     cout << " are colinear. Skipping i to " << i << endl;
-        // }
-        if (orientation(start_point, points[i], points[i+1]) != COLINEAR) {
+    for (int i = 1; i < n-1; i++) {
+        if (orientation(start_point, points[i], points[i+1]) != COLINEAR)
             is_line = false;
-            // cout << "Points " << "(" << start_point.x << ", " << start_point.y << ")" << endl;
-            // cout << "   (" << points[i].x << ", " << points[i].y << ")" << endl;
-            // cout << "   (" << points[i+1].x << ", " << points[i+1].y << ")" << endl;
-            // cout << " are NOT colinear. Turns count =  " << turns << endl;
-        } else {
-            // turns += 1;
-            // cout << "Points " << "(" << start_point.x << ", " << start_point.y << ")" << endl;
-            // cout << "   (" << points[i].x << ", " << points[i].y << ")" << endl;
-            // cout << "   (" << points[i+1].x << ", " << points[i+1].y << ")" << endl;
-            // cout << " ARE colinear. Turns count =  " << turns << endl;
-
-        }
-        // points[mod_len] = points[i]; 
-        // mod_len++;
     } 
 
     vector<Point> hull;
@@ -157,7 +135,6 @@ int count_onion_layers(vector<Point> points) {
     bool can_make_a_hull = true;
     while (can_make_a_hull) {
         vector<Point> hull = convex_hull(points, points.size());
-        // print_hull(hull);
         if (hull.size() > 0) {
             num_of_hulls += 1;
             points = remove_hull_from_points(points, hull);
@@ -167,7 +144,6 @@ int count_onion_layers(vector<Point> points) {
             can_make_a_hull = false;
         }
     }
-    // cout << num_of_hulls << endl;
     return num_of_hulls;
 }
 
