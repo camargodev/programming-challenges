@@ -17,14 +17,6 @@ Point start_point;
 int COLINEAR = 0, CLOCKWISE = 1, COUNTER_CLOCKWISE = 2;
 int MIN_HULL_SIZE = 3;
 
-Point nextToTop(stack<Point> &S) { 
-	Point p = S.top(); 
-	S.pop(); 
-	Point res = S.top(); 
-	S.push(p); 
-	return res; 
-} 
-
 void swap_points(Point &p1, Point &p2) { 
 	Point temp = p1; 
 	p1 = p2; 
@@ -55,12 +47,12 @@ int compare(const void *vp1, const void *vp2) {
     return (o == COUNTER_CLOCKWISE) ? -1: 1; 
 } 
 
-void sort_points(Point* points, int n) {
-    start_point = points[0]; 
-    qsort(&points[1], n-1, sizeof(Point), compare); 
-}
+// void sort_points(Point* points, int n) {
+//     start_point = points[0]; 
+//     qsort(&points[1], n-1, sizeof(Point), compare); 
+// }
 
-int get_bottom_most_point_index(Point points[], int n) {
+int get_bottom_most_point_index(vector<Point> points, int n) {
     int ymin = points[0].y, min = 0; 
     for (int i = 1; i < n; i++) { 
         int y = points[i].y; 
@@ -70,7 +62,7 @@ int get_bottom_most_point_index(Point points[], int n) {
     return min;
 }
 
-vector<Point> build_start_hull(Point points[]) {
+vector<Point> build_start_hull(vector<Point> points) {
     vector<Point> start_hull; 
     start_hull.push_back(points[0]); 
     start_hull.push_back(points[1]); 
@@ -78,11 +70,12 @@ vector<Point> build_start_hull(Point points[]) {
     return start_hull;
 }
 
-vector<Point> convex_hull(Point points[], int n) { 
+vector<Point> convex_hull(vector<Point> points, int n) { 
     
     int bottom_most_point = get_bottom_most_point_index(points, n);
     swap_points(points[0], points[bottom_most_point]); 
-    sort_points(points, n);
+    start_point = points[0]; 
+    qsort(&points[1], n-1, sizeof(Point), compare); 
 
     int mod_len = 1;
     for (int i = 1; i < n; i++) { 
@@ -106,8 +99,8 @@ vector<Point> convex_hull(Point points[], int n) {
     return hull;
 } 
 
-int count_onion_layers(Point points[], int n) {
-    vector<Point> hull = convex_hull(points, n);
+int count_onion_layers(vector<Point> points) {
+    vector<Point> hull = convex_hull(points, points.size());
 
     while (!hull.empty())  { 
         Point point = hull[hull.size()-1]; 
@@ -123,11 +116,13 @@ int main() {
         cin >> n;
         if (n == 0) break;
 
-        Point points[n];
+        vector<Point> points;
         for (int i = 0; i < n; i++) {
-            cin >> points[i].x >> points[i].y;
+            Point point;
+            cin >> point.x >> point.y;
+            points.push_back(point);
         }
-        int onion_layers = count_onion_layers(points, n); 
+        int onion_layers = count_onion_layers(points); 
         if (onion_layers % 2 == 0) cout << "NO" << endl;
         else cout << "YES" << endl;
     }
