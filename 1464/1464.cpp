@@ -87,7 +87,8 @@ vector<Point> convex_hull(vector<Point> points, int n) {
     hull = build_start_hull(points);
 
     for (int i = MIN_HULL_SIZE; i < mod_len; i++) { 
-        while (orientation(hull[hull.size()-2], hull[hull.size()-1], points[i]) != COUNTER_CLOCKWISE) 
+        while (orientation(hull[hull.size()-2], hull[hull.size()-1], points[i]) != COUNTER_CLOCKWISE
+            && orientation(hull[hull.size()-2], hull[hull.size()-1], points[i]) != COLINEAR) 
             hull.pop_back(); 
         hull.push_back(points[i]); 
     } 
@@ -134,8 +135,8 @@ int count_onion_layers(vector<Point> points) {
     while (can_make_a_hull) {
         vector<Point> hull = convex_hull(points, points.size());
         num_of_hulls += 1;
-        print_hull(hull);
-        cout << endl;
+        // print_hull(hull);
+        // cout << endl;
         if (hull.size() > 0) {
             points = remove_hull_from_points(points, hull);
             if (points.size() == 0) 
@@ -144,7 +145,7 @@ int count_onion_layers(vector<Point> points) {
             can_make_a_hull = false;
         }
     }
-    cout << num_of_hulls << endl;
+    // cout << num_of_hulls << endl;
     return num_of_hulls;
 }
 
