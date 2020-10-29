@@ -47,11 +47,6 @@ int compare(const void *vp1, const void *vp2) {
     return (o == COUNTER_CLOCKWISE) ? -1: 1; 
 } 
 
-// void sort_points(Point* points, int n) {
-//     start_point = points[0]; 
-//     qsort(&points[1], n-1, sizeof(Point), compare); 
-// }
-
 int get_bottom_most_point_index(vector<Point> points, int n) {
     int ymin = points[0].y, min = 0; 
     for (int i = 1; i < n; i++) { 
@@ -100,11 +95,19 @@ vector<Point> convex_hull(vector<Point> points, int n) {
 } 
 
 void print_points(vector<Point> points) {
+    if (points.size() == 0 ){
+        cout << "No points " << endl;
+        return;
+    }
     for (int i = 0; i < points.size(); i++)
         cout << "(" << points[i].x << ", " << points[i].y <<")" << endl; 
 }
 
 void print_hull(vector<Point> hull) {
+    if (hull.size() == 0 ){
+        cout << "Empty Hull " << endl;
+        return;
+    }
     for (int i = hull.size() - 1; i >= 0; i--)
         cout << "(" << hull[i].x << ", " << hull[i].y <<")" << endl; 
 }
@@ -127,19 +130,28 @@ vector<Point> remove_hull_from_points(vector<Point> points, vector<Point> hull) 
 
 int count_onion_layers(vector<Point> points) {
     int num_of_hulls = 0;
-    vector<Point> hull = convex_hull(points, points.size());
-    // while (!hull.empty()) {
-    cout << "POINTS BEFORE " << endl;
-    print_points(points);
-    
-    num_of_hulls += 1;
-    cout << "HULL " << endl;
-    print_hull(hull);
-    points = remove_hull_from_points(points, hull);
-    cout << "POINTS AFTER " << endl;
-    print_points(points);
-    //     hull = convex_hull(points, points.size());
-    // }
+    bool can_make_a_hull = true;
+    while (can_make_a_hull) {
+        cout << "POINTS BEFORE " << endl;
+        print_points(points);
+
+        vector<Point> hull = convex_hull(points, points.size());
+        if (hull.size() > 0) {
+            num_of_hulls += 1;
+
+            cout << "HULL " << endl;
+            print_hull(hull);
+
+            points = remove_hull_from_points(points, hull);
+
+            cout << "POINTS AFTER " << endl;
+            print_points(points);
+
+            if (points.size() == 0) can_make_a_hull = false;
+        } else {
+            can_make_a_hull = false;
+        }
+    }
     return num_of_hulls;
 }
 
