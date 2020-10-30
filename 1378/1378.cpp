@@ -12,43 +12,49 @@
 
 using namespace std;
 
-int X[MAX], Y[MAX];
-long T[MAX][MAX];
+struct Point { int x; int y; };
 
-long sqr(long v) { return v*v; }
+Point points[MAX];
+long dist[MAX][MAX];
+
+long srq_dist(int i, int j) {
+    long dx = points[i].x - points[j].x;
+    long dy = points[i].y - points[j].y;
+    return dx*dx + dy*dy;
+}
 
 int main() {
-    int num_points;
+    int num_points, i, j;
     while(true) {
     	cin >> num_points;
-    	if (num_points == 0) 
-            break;
+
+    	if (num_points == 0) break;
     	
-        for(int i = 0; i < num_points; ++i)
-            cin >> X[i] >> Y[i];
+        for(i = 0; i < num_points; ++i)
+            cin >> points[i].x >> points[i].y;
         
-        int sum = 0;
-        for(int i = 0; i < num_points; ++i)  {
-        	int aux = 0;
-            for(int j = 0; j < num_points; ++j)
-                T[i][aux++] = sqr(X[i] - X[j]) + sqr(Y[i] - Y[j]);
-                
-            sort(T[i], T[i] + aux);
+        int total_count = 0;
+        for(i = 0; i < num_points; ++i)  {
+            int count_for_i = 0;
             long last = -1L;
-            int cnt = 0;
-            
-            for(int j = 0; j < aux; ++j)  {
-                if (T[i][j] != last)  {
-                    sum += (cnt * (cnt - 1)) / 2;
-                    cnt = 0;
+
+            for(j = 0; j < num_points; ++j) 
+                dist[i][j] = srq_dist(i, j);
+                
+            sort(dist[i], dist[i] + j);
+
+            for(j = 0; j < num_points; ++j)  {
+                if (dist[i][j] != last)  {
+                    total_count += (count_for_i * (count_for_i - 1)) / 2;
+                    count_for_i = 0;
                 }
-                last = T[i][j];
-                cnt++;
+                last = dist[i][j];
+                count_for_i++;
             }
-            sum += (cnt * (cnt - 1)) / 2;
+            total_count += (count_for_i * (count_for_i - 1)) / 2;
         }
 
-        cout << sum << endl;
+        cout << total_count << endl;
     }
     return 0;
     
