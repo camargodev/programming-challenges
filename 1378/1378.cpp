@@ -8,41 +8,39 @@
 #include <iomanip>
 #include <algorithm>
 
-#define MAXN 1001
+#define MAXN 1010
 
 using namespace std;
 
-using num = long;
-
 struct Point {
-    num x;
-    num y;
+    int x;
+    int y;
 };
 
 Point points[MAXN];
-num dists[MAXN][MAXN];
+long dists[MAXN][MAXN];
 
-num dist(Point p, Point q) {
-    num x = p.x - q.x;
-    num y = p.y - q.y;
+long dist(Point p, Point q) {
+    int x = p.x - q.x;
+    int y = p.y - q.y;
     
     return x*x + y*y;
 }
 
 
-num count_isosceles_vertex(num num_points) {
-    num count = 0;
-    for(num i = 0; i < num_points; ++i)  {
-        num aux = 0;
-        for(num j = 0; j < num_points; ++j)
-            dists[i][aux++] = dist(points[i], points[j]);
+int count_isosceles_vertex(int num_points) {
+    int count = 0;
+    for(int i = 0; i < num_points; ++i)  {
+        int aux_counter = 0;
+        for(int j = 0; j < num_points; ++j)
+            dists[i][aux_counter++] = dist(points[i], points[j]);
             
-        sort(dists[i], dists[i] + aux);
+        sort(dists[i], dists[i]+aux_counter);
         
-        num last = -1L;
-        num counter_for_i = 0;
+        long last = -1L;
+        int counter_for_i = 0;
         
-        for(num j = 0; j < aux; ++j) {
+        for(int j = 0; j < aux_counter; ++j) {
             if (dists[i][j] != last) {
                 count += (counter_for_i * (counter_for_i-1)) / 2;
                 counter_for_i = 0;
@@ -56,16 +54,16 @@ num count_isosceles_vertex(num num_points) {
 }
 
 int main() {
-    num num_points;
+    int num_points;
     while(true) {
     	cin >> num_points;
     	if (num_points == 0) 
             break;
     	
-        for(num i = 0; i < num_points; ++i)
+        for(int i = 0; i < num_points; ++i)
             cin >> points[i].x >> points[i].y;
         
-        num count = count_isosceles_vertex(num_points);
+        int count = count_isosceles_vertex(num_points);
         cout << count << endl;
     }
     
