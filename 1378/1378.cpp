@@ -30,20 +30,20 @@ int main() {
 
     	if (num_points == 0) break;
     	
-        for(i = 0; i < num_points; ++i)
+        for(i = 0; i < num_points; i++)
             cin >> points[i].x >> points[i].y;
         
         int total_count = 0;
-        for(i = 0; i < num_points; ++i)  {
+        for(i = 0; i < num_points; i++)  {
             int count_for_i = 0;
             long last = -1L;
 
-            for(j = 0; j < num_points; ++j) 
+            for(j = 0; j < num_points; j++) 
                 dist[i][j] = srq_dist(i, j);
                 
             sort(dist[i], dist[i] + j);
 
-            for(j = 0; j < num_points; ++j)  {
+            for(j = 0; j < num_points; j++)  {
                 if (dist[i][j] != last)  {
                     total_count += (count_for_i * (count_for_i - 1)) / 2;
                     count_for_i = 0;
