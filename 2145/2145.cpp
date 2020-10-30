@@ -22,11 +22,18 @@ struct Relationship {
 };
 
 num get_sum_of_divisors(num N) {
-    num half = N/2;
-    num sum = 1;
-    for (int i = 2; i < half+1; i++) 
-        if (N % i == 0) sum += i;
-    return sum;
+
+    int sum = 0; 
+
+    for (int i = 2; i <= sqrt(N); i++) { 
+        if (N % i == 0)  { 
+            if (i == (N/i))  
+                sum += i; 
+            else 
+                sum += (i + N/i); 
+        } 
+    } 
+    return (sum + 1); 
 }
 
 Relationship build_relationship(num N, num M) {
