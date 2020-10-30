@@ -18,7 +18,6 @@ struct Point {
 };
 
 Point points[MAXN];
-long dists[MAXN][MAXN];
 
 double dist(Point p, Point q) {
     double x = p.x - q.x;
@@ -38,30 +37,14 @@ bool is_isosceles(int i, int j, int k) {
     return false;
 }
 
-
-void update_counted(bool* counted, int i, int j, int k) {
-    counted[i] = true;
-    counted[j] = true;
-    counted[k] = true;
-}
-
 int count_isosceles_vertex(int num_points) {
-    bool counted[num_points];
-    for(int i = 0; i < num_points; ++i) {
-        counted[i] = false;
-        for(int j = 0; j < num_points; ++j)
-            dists[i][j] = dist(points[i], points[j]);
-    }
-
-    for (int i = 0; i < num_points; i++)
-        for (int j = 0; j < i; j++)
-            for (int k = 0; k < j; k++)
+    int count = 0;  
+    for (int i = 0; i < num_points; i++) 
+        for (int j = 0; j < i; j++) 
+            for (int k = 0; k < j; k++) 
                 if (is_isosceles(i,j,k))
-                    update_counted(counted, i,j,k);
-     
-    int count = 0;       
-    for (int i = 0; i < num_points; i++)
-        if (counted[i]) count += 1;
+                    count += 1;
+          
     return count;
 }
 
