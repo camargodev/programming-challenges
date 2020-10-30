@@ -20,36 +20,48 @@ struct Point {
 Point points[MAXN];
 long dists[MAXN][MAXN];
 
-long dist(Point p, Point q) {
-    int x = p.x - q.x;
-    int y = p.y - q.y;
+double dist(Point p, Point q) {
+    double x = p.x - q.x;
+    double y = p.y - q.y;
     
     return x*x + y*y;
 }
 
+bool is_isosceles(int i, int j, int k) {
+    double dist_i_j = dist(points[i], points[j]);
+    double dist_i_k = dist(points[i], points[k]);
+    double dist_j_k = dist(points[j], points[k]);
+    if (dist_i_j == dist_i_k && dist_i_k == dist_j_k) return false;
+    if (dist_i_j == dist_i_k) return true;
+    if (dist_j_k == dist_i_k) return true;
+    if (dist_i_j == dist_j_k) return true;
+    return false;
+}
+
+
+void update_counted(bool* counted, int i, int j, int k) {
+    counted[i] = true;
+    counted[j] = true;
+    counted[k] = true;
+}
 
 int count_isosceles_vertex(int num_points) {
-    int count = 0;
-    for(int i = 0; i < num_points; ++i)  {
-        int aux_counter = 0;
+    bool counted[num_points];
+    for(int i = 0; i < num_points; ++i) {
+        counted[i] = false;
         for(int j = 0; j < num_points; ++j)
-            dists[i][aux_counter++] = dist(points[i], points[j]);
-            
-        sort(dists[i], dists[i]+aux_counter);
-        
-        long last = -1L;
-        int counter_for_i = 0;
-        
-        for(int j = 0; j < aux_counter; ++j) {
-            if (dists[i][j] != last) {
-                count += (counter_for_i * (counter_for_i-1)) / 2;
-                counter_for_i = 0;
-            }
-            last = dists[i][j];
-            counter_for_i++;
-        }
-        count += (counter_for_i * (counter_for_i-1)) / 2;
+            dists[i][j] = dist(points[i], points[j]);
     }
+
+    for (int i = 0; i < num_points; i++)
+        for (int j = 0; j < i; j++)
+            for (int k = 0; k < j; k++)
+                if (is_isosceles(i,j,k))
+                    update_counted(counted, i,j,k);
+     
+    int count = 0;       
+    for (int i = 0; i < num_points; i++)
+        if (counted[i]) count += 1;
     return count;
 }
 
