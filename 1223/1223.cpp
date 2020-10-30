@@ -73,11 +73,23 @@ double point_to_segment_distance(point point, segment segment)  {
     return distance; 
 } 
 
-// 3
-// 6 10
-// 9 3 8
-// 6 2 5
-// 4 3 1
+int test_main() {
+    segment L(point(0,0), point(0,10));
+    segment R(point(5,0) , point(5,10));
+    
+    point pA(3,7);
+    point pB(2,4);
+
+    segment X(point(2,4), point(5,7));
+    segment Y(point(3,0), point(0,2));
+
+    cout << "from pA to R " << point_to_segment_distance(pA, R) << endl;
+    cout << "from pA to X " << point_to_segment_distance(pA, X) << endl;
+    cout << "from pB to L " << point_to_segment_distance(pB, L) << endl;
+    cout << "from pB to Y " << point_to_segment_distance(pB, Y) << endl;
+
+    return 0;
+}
 
 int main() {
     int n, l, h;
@@ -94,11 +106,17 @@ int main() {
 		for (int i = 0; i < n; i++) {
             int pipe_start_y, pipe_end_x, pipe_end_y;
 			cin >> pipe_start_y >> pipe_end_x >> pipe_end_y;
-            int pipe_start_x = 0;
-            if (i % 2 != 0) pipe_end_x = l;
+            point pipe_start, pipe_end;
 
-            point pipe_start = point(pipe_start_x, pipe_start_y);
-            point pipe_end = point(pipe_end_x, pipe_end_y);
+            if (i % 2 == 0) {
+                pipe_start = point(0, pipe_start_y);
+            } else {
+                pipe_start = point(l, pipe_start_y);
+            }
+            pipe_end = point(pipe_end_x, pipe_end_y);
+
+            // cout << "Pipe " << i << " starts in (" << pipe_start.x << "," << pipe_start.y << ") and ends in (";
+            // cout << pipe_end.x << "," << pipe_end.y << ")" << endl;
 
             pipes[i] = segment(pipe_start, pipe_end);
 		}
@@ -106,20 +124,18 @@ int main() {
         double min_dist = INF;
         for (int i = 0; i < n; i++) {
             segment pipe = pipes[i];
-            point pipe_point = (i % 2 == 0) ? pipe.end  : pipe.start;
-            segment wall     = (i % 2 == 0) ? left_wall : right_wall;
+            segment wall = (i % 2 == 0) ? right_wall : left_wall;
 
-            double min_dist_for_pipe = point_to_segment_distance(pipe_point, wall);
+            double min_dist_for_pipe = point_to_segment_distance(pipe.end, wall);
             // cout << "Distance from pipe " << (i+1) << " to wall is " << min_dist_for_pipe << endl;
 
             if (i < (n-1)) {
                 segment next_pipe = pipes[i+1];
-                double distance_to_next_pipe = point_to_segment_distance(pipe_point, next_pipe);
+                double distance_to_next_pipe = point_to_segment_distance(pipe.end, next_pipe);
                 //  cout << "Distance from pipe " << (i+1) << " to next is " << distance_to_next_pipe << endl;
                 min_dist_for_pipe = min(min_dist_for_pipe, distance_to_next_pipe);
             }
 
-            // double min_dist_for_pipe = min(distance_to_wall, distance_to_next_pipe);
             // cout << "Min dist for pipe " << (i+1) << " is " << min_dist_for_pipe << endl;
 
             min_dist = min(min_dist, min_dist_for_pipe);
