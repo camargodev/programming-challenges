@@ -58,15 +58,15 @@ Relationship build_relationship(num N, num M) {
     }
 
     if (m_divides_by_sum_of_n) {
-        relationship.A = N;
-        relationship.B = M;
+        relationship.A = M;
+        relationship.B = N;
         relationship.relation = FRIENDZONE;
         return relationship;
     }
 
     if (n_divides_by_sum_of_m) {
-        relationship.A = M;
-        relationship.B = N;
+        relationship.A = N;
+        relationship.B = M;
         relationship.relation = FRIENDZONE;
         return relationship;
     }
@@ -77,13 +77,13 @@ Relationship build_relationship(num N, num M) {
 
 void print_relationship(Relationship relationship) {
     if (relationship.relation == NONE) {
-        cout << "No connection" << endl;
+        cout << "No connection." << endl;
     } else if (relationship.relation == ALMOST) {
         cout << "Almost lovers!" << endl;
     } else if (relationship.relation == LOVERS) {
         cout << "Friends and lovers <3" << endl;
     } else {
-        cout << relationship.A << " friendzoned " << relationship.B << endl;
+        cout << relationship.A << " friendzoned " << relationship.B << "!" << endl;
     }
 }
 
