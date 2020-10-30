@@ -8,45 +8,14 @@
 #include <iomanip>
 #include <algorithm>
 
-#define MAXN 1010
+#define MAX 1010
 
 using namespace std;
 
-struct Point {
-    int x;
-    int y;
-};
+int X[MAX], Y[MAX];
+long T[MAX][MAX];
 
-Point points[MAXN];
-
-double dist(Point p, Point q) {
-    double x = p.x - q.x;
-    double y = p.y - q.y;
-    
-    return x*x + y*y;
-}
-
-bool is_isosceles(int i, int j, int k) {
-    double dist_i_j = dist(points[i], points[j]);
-    double dist_i_k = dist(points[i], points[k]);
-    double dist_j_k = dist(points[j], points[k]);
-    if (dist_i_j == dist_i_k && dist_i_k == dist_j_k) return false;
-    if (dist_i_j == dist_i_k) return true;
-    if (dist_j_k == dist_i_k) return true;
-    if (dist_i_j == dist_j_k) return true;
-    return false;
-}
-
-int count_isosceles_vertex(int num_points) {
-    int count = 0;  
-    for (int i = 0; i < num_points; i++) 
-        for (int j = 0; j < i; j++) 
-            for (int k = 0; k < j; k++) 
-                if (is_isosceles(i,j,k))
-                    count += 1;
-          
-    return count;
-}
+long sqr(long v) { return v*v; }
 
 int main() {
     int num_points;
@@ -56,10 +25,31 @@ int main() {
             break;
     	
         for(int i = 0; i < num_points; ++i)
-            cin >> points[i].x >> points[i].y;
+            cin >> X[i] >> Y[i];
         
-        int count = count_isosceles_vertex(num_points);
-        cout << count << endl;
+        int sum = 0;
+        for(int i = 0; i < num_points; ++i)  {
+        	int aux = 0;
+            for(int j = 0; j < num_points; ++j)
+                T[i][aux++] = sqr(X[i] - X[j]) + sqr(Y[i] - Y[j]);
+                
+            sort(T[i], T[i] + aux);
+            long last = -1L;
+            int cnt = 0;
+            
+            for(int j = 0; j < aux; ++j)  {
+                if (T[i][j] != last)  {
+                    sum += (cnt * (cnt - 1)) / 2;
+                    cnt = 0;
+                }
+                last = T[i][j];
+                cnt++;
+            }
+            sum += (cnt * (cnt - 1)) / 2;
+        }
+
+        cout << sum << endl;
     }
+    return 0;
     
 }
