@@ -1,9 +1,9 @@
 def flipping_matrix(matrix):
     n = len(matrix)
-    submatrix_size = n//2
+    quadrant_size = n//2
     max_sum = 0
-    for i in range(submatrix_size):
-        for j in range(submatrix_size):
+    for i in range(quadrant_size):
+        for j in range(quadrant_size):
             val_1 = matrix[i][j]
             val_2 = matrix[n-i-1][j]
             val_3 = matrix[i][n-j-1]
