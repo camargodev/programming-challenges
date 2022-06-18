@@ -8,10 +8,8 @@ def time_conversion(ampm_time):
     return "{0}:{1}:{2}".format(hours, minutes, seconds)
     
 def calculate_time_parts(ampm_time):
-    time_parts = ampm_time.split(":")
-    seconds_with_suffix = time_parts[2]
+    hours, minutes, seconds_with_suffix = ampm_time.split(":")
     seconds, day_part = seconds_with_suffix[:2], seconds_with_suffix[2:]
-    hours, minutes = time_parts[0], time_parts[1]
     return hours, minutes, seconds, day_part
 
 def convert_hours(hours, day_part):
