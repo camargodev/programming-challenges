@@ -1,4 +1,4 @@
-def palindromeIndex(word):
+def palindrome_index(word):
     begin = 0
     end = len(word) - 1
     while begin < end:
