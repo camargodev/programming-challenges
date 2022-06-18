@@ -1,5 +1,3 @@
-import os
-
 def grid_challenge(n, grid):
     sorted_grid = []
     m = len(grid[0])
@@ -12,16 +10,3 @@ def grid_challenge(n, grid):
         if column_values != sorted(column_values):
             return 'NO'
     return 'YES'
-
-if __name__ == '__main__':
-    fptr = open(os.environ['OUTPUT_PATH'], 'w')
-    t = int(input().strip())
-    for t_itr in range(t):
-        n = int(input().strip())
-        grid = []
-        for _ in range(n):
-            grid_item = input()
-            grid.append(grid_item)
-        result = grid_challenge(n, grid)
-        fptr.write(result + '\n')
-    fptr.close()

@@ -15,11 +15,3 @@ def minimum_bribes(positions):
                 num_of_bribes += 1
                 again = True
     print(num_of_bribes)
-        
-if __name__ == '__main__':
-    t = int(input().strip())
-
-    for t_itr in range(t):
-        n = int(input().strip())
-        q = list(map(int, input().rstrip().split()))
-        minimum_bribes(q)
