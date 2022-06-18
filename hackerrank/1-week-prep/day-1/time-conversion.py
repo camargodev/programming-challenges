@@ -1,5 +1,3 @@
-import os
-
 MID_DAY = '12'
 MID_NIGHT = '00'
 BEFORE_NOON = 'AM'
