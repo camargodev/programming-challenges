@@ -11,7 +11,7 @@ class Stack:
         self._values.append(value)
     
     def top(self):
-        return self._values[self._size-1]
+        return self._values[-1]
     
     def pop(self):
         self._size -= 1
