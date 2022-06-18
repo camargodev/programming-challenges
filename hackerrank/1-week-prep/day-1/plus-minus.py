@@ -10,15 +10,10 @@ def plus_minus(values):
         else:
             zeros += 1
     
-    total = len(arr)
+    total = len(values)
     print(format_number(positives/total))
     print(format_number(negatives/total))
     print(format_number(zeros/total))
     
 def format_number(number):
     return "{:.6f}".format(number)
-
-if __name__ == '__main__':
-    n = int(input().strip())
-    arr = list(map(int, input().rstrip().split()))
-    plus_minus(arr)

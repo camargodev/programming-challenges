@@ -20,10 +20,3 @@ def convert_hours(hours, day_part):
     if hours == MID_DAY:
         return MID_NIGHT if day_part == BEFORE_NOON else MID_DAY
     return hours if day_part == BEFORE_NOON else str(int(hours)+12)
-
-if __name__ == '__main__':
-    fptr = open(os.environ['OUTPUT_PATH'], 'w')
-    s = input()
-    result = time_conversion(s)
-    fptr.write(result + '\n')
-    fptr.close()
