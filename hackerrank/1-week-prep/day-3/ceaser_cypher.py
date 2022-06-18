@@ -1,6 +1,6 @@
 ALPHABET = 'abcdefghijklmnopqrstuvwxyz'
 
-def caesarCipher(text, num_rotations):
+def caesar_cipher(text, num_rotations):
     encrypted_text = ''
     for letter in text:
         if letter.lower() not in ALPHABET:
