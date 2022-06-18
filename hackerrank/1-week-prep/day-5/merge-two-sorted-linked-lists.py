@@ -12,11 +12,9 @@ def merge_lists(head1, head2):
                 merged_list_head = head2
             current, last, head2 = consume_list(current, last, head2)
     if head1 is None:
-        while head2 is not None:
-            current, last, head2 = consume_list(current, last, head2)
+        current.next = head2
     if head2 is None:
-        while head1 is not None:
-            current, last, head1 = consume_list(current, last, head1)
+        current.next = head1
              
     return merged_list_head
             
