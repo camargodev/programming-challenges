@@ -1,4 +1,4 @@
-def mergeLists(head1, head2):
+def merge_lists(head1, head2):
     last = None
     current = None
     merged_list_head = None
