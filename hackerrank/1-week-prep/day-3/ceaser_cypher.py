@@ -1,5 +1,3 @@
-import os
-
 ALPHABET = 'abcdefghijklmnopqrstuvwxyz'
 
 def caesarCipher(text, num_rotations):
@@ -16,12 +14,3 @@ def caesarCipher(text, num_rotations):
             encrypted_letter = encrypted_letter.upper()
         encrypted_text += encrypted_letter
     return encrypted_text
-
-if __name__ == '__main__':
-    fptr = open(os.environ['OUTPUT_PATH'], 'w')
-    n = int(input().strip())
-    s = input()
-    k = int(input().strip())
-    result = caesarCipher(s, k)
-    fptr.write(result + '\n')
-    fptr.close()

@@ -16,9 +16,3 @@ def find_zig_zag_sequence(a, n):
         else:
             print(a[i], end = ' ')
     return
-
-test_cases = int(input())
-for cs in range (test_cases):
-    n = int(input())
-    a = list(map(int, input().split()))
-    find_zig_zag_sequence(a, n)
