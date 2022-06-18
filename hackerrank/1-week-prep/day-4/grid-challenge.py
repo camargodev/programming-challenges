@@ -1,11 +1,11 @@
-def grid_challenge(n, grid):
+def grid_challenge(rows, grid):
     sorted_grid = []
-    m = len(grid[0])
+    cols = len(grid[0])
     for row in grid:
-        sorted_grid.append(''.join(sorted(row)))
-    for i in range(m):
+        sorted_grid.append(sorted(row))
+    for i in range(cols):
         column_values = []
-        for j in range(n):
+        for j in range(rows):
             column_values.append(sorted_grid[j][i])
         if column_values != sorted(column_values):
             return 'NO'
