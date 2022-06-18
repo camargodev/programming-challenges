@@ -1,4 +1,4 @@
-def flippingMatrix(matrix):
+def flipping_matrix(matrix):
     n = len(matrix)
     submatrix_size = n//2
     max_sum = 0
