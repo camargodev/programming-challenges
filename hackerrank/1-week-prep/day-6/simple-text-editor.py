@@ -17,7 +17,7 @@ class Stack:
         self._size -= 1
         self._values.pop()
 
-class text_editor:
+class TextEditor:
     def __init__(self):
         self._content = ''
         self._content_stack = Stack()
