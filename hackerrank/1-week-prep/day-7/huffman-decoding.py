@@ -16,7 +16,7 @@ def build_input_deque(string):
         input_deque.append(int(char))
     return input_deque
 
-def decodeHuff(root, string):
+def decode_huff(root, string):
     result = ""
     input_deque = build_input_deque(string)
     while input_deque:
