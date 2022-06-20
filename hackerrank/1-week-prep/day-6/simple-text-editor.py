@@ -45,7 +45,7 @@ def process_action(payload):
         parts.append(None)
     return int(parts[0]), parts[1] 
     
-editor = text_editor()
+editor = TextEditor()
 for _ in range(int(input())):
     action, content = process_action(input())
     if action == 1:
