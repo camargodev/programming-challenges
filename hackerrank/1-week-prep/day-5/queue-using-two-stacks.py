@@ -20,25 +20,28 @@ class Stack:
         
 class Queue:
     def __init__(self):
-        self._stack_1 = Stack()
-        self._stack_2 = Stack()
+        self._main_stack = Stack()
+        self._helper_stack = Stack()
     
     def enqueue(self, new_value):
-        if self._stack_1.is_empty() and self._stack_2.is_empty():
-            self._stack_1.push(new_value)
+        if self._main_stack.is_empty() and self._helper_stack.is_empty():
+            self._main_stack.push(new_value)
         else:
-            self._stack_2.push(new_value)
+            self._helper_stack.push(new_value)
     
     def dequeue(self):
-        if self._stack_1.is_empty():
-            while not self._stack_2.is_empty():
-                self._stack_1.push(self._stack_2.pop())
-        self._stack_1.pop()
+        self._move_to_main_stack()
+        self._main_stack.pop()
     
     def print_front(self):
-        if self._stack_1.is_empty():
-            while not self._stack_2.is_empty():
-                self._stack_1.push(self._stack_2.pop())
+        self._move_to_main_stack()
+        print(self._main_stack.top())
+        
+    def _move_to_main_stack(self):
+        if not self._main_stack.is_empty():
+            return
+        while not self._helper_stack.is_empty():
+            self._main_stack.push(self._helper_stack.pop())
         print(self._stack_1.top())
 
 queue = Queue()
