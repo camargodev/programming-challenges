@@ -20,7 +20,7 @@ class Stack:
 class text_editor:
     def __init__(self):
         self._content = ''
-        self._content_stack = stack()
+        self._content_stack = Stack()
         self._content_stack.push(self._content)
     
     def append(self, text):
