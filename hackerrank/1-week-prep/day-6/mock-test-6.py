@@ -20,7 +20,6 @@ def bfs(n, m, edges, s):
     visited.add(s)
     while queue:
         node, cost = queue.popleft()
-        visited.add(node)
         for node_to in edges_dict[node]:
             if node_to in visited:
                 continue
