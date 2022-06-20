@@ -42,7 +42,6 @@ class Queue:
             return
         while not self._helper_stack.is_empty():
             self._main_stack.push(self._helper_stack.pop())
-        print(self._stack_1.top())
 
 queue = Queue()
 for _ in range(int(input())):
