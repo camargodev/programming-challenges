@@ -1,4 +1,4 @@
-def preOrder(root):
+def pre_order(root):
     values = []
     pre_order_rec(root, values)
     print(" ".join(values))
