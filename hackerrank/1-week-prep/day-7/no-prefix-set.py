@@ -1,4 +1,4 @@
-def noPrefix(words):
+def no_prefix(words):
     previous_words = set()
     prefixes = set()
 
