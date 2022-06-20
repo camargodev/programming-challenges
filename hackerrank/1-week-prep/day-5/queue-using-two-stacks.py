@@ -14,9 +14,8 @@ class Stack:
         return self._values[self._size-1]
     
     def pop(self):
-        value = self._values[self._size-1]
         self._size -= 1
-        self._values.pop()
+        value = self._values.pop()
         return value
         
 class Queue:
