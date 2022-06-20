@@ -27,5 +27,5 @@ def bfs(n, m, edges, s):
             costs[node_to-1] = cost*6
             queue.append((node_to, cost+1))
             visited.add(node_to)
-            costs.pop(s-1)
+        costs.pop(s-1)
     return costs
